@@ -9,10 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.connectDatabase = void 0;
-const mongoose_1 = require("mongoose");
-const connectDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, mongoose_1.connect)(process.env.MONGO_URI);
-    console.log("Database Connected!");
+exports.onMessage = void 0;
+const onMessage = (message) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(message.content);
 });
-exports.connectDatabase = connectDatabase;
+exports.onMessage = onMessage;
