@@ -10,7 +10,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.onMessage = void 0;
+const _CommandList_1 = require("../command/_CommandList");
+const prefix = "-";
 const onMessage = (message) => __awaiter(void 0, void 0, void 0, function* () {
+    if (message.author.bot) {
+        return;
+    }
+    for (const Command of _CommandList_1.CommandList) {
+        if (message.content.startsWith(prefix + Command.name)) {
+            yield Command.run(message);
+            break;
+        }
+    }
     console.log(message.content);
 });
 exports.onMessage = onMessage;
