@@ -31,7 +31,7 @@ exports.test = {
         }
         const prepare_msg = new discord_js_1.MessageEmbed();
         prepare_msg.setTitle("哈兔大聯盟 哈!");
-        prepare_msg.setDescription(text);
+        prepare_msg.setTitle(text);
         prepare_msg.setAuthor(author.username + "#" + author.discriminator, author.displayAvatarURL());
         prepare_msg.setImage("https://i.imgur.com/9wCBpdg.jpeg");
         yield channel.send({ embeds: [prepare_msg] });

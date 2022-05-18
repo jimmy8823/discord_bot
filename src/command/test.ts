@@ -18,7 +18,7 @@ export const test: CommandInt = {
         }
         const prepare_msg = new MessageEmbed();
             prepare_msg.setTitle("哈兔大聯盟 哈!");
-            prepare_msg.setDescription(text);
+            prepare_msg.setTitle(text);
             prepare_msg.setAuthor(
                 author.username + "#" + author.discriminator,
                 author.displayAvatarURL()
