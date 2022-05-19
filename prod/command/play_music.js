@@ -15,7 +15,7 @@ const index_1 = require("../index");
 const discord_music_player_1 = require("discord-music-player");
 exports.play = {
     name: "play",
-    description: "play music",
+    description: "play music :musical_note: ",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         const { author, channel, content, guild, member } = message;
         const args = message.content.trim();
@@ -30,7 +30,7 @@ exports.play = {
 };
 exports.playlist = {
     name: "playlist",
-    description: "play list",
+    description: "play list :musical_note:",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         const { author, channel, content, guild, member } = message;
         const args = message.content.trim();
@@ -45,84 +45,98 @@ exports.playlist = {
 };
 exports.skip = {
     name: "skip",
-    description: "skip song",
+    description: "skip song :fast_forward: ",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         index_1.guildQueue.skip();
+        const prepare_msg = new discord_js_1.MessageEmbed();
+        prepare_msg.setTitle(index_1.guildQueue.nowPlaying + " skipped :fast_forward: ");
+        yield message.channel.send({ embeds: [prepare_msg] });
     })
 };
 exports.stop = {
     name: "stop",
-    description: "stop song",
+    description: "stop song :stop_button: ",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         index_1.guildQueue.stop();
+        const prepare_msg = new discord_js_1.MessageEmbed();
+        prepare_msg.setTitle("Music stop :stop_button: ");
+        yield message.channel.send({ embeds: [prepare_msg] });
     })
 };
 exports.removeLoop = {
-    name: "removeloop",
+    name: "rl",
     description: "removeLoop",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         yield index_1.guildQueue.setRepeatMode(discord_music_player_1.RepeatMode.DISABLED);
         const prepare_msg = new discord_js_1.MessageEmbed();
         console.log(discord_music_player_1.RepeatMode);
-        prepare_msg.setTitle("turn off repeat!");
+        prepare_msg.setTitle("disable repeat!");
         yield message.channel.send({ embeds: [prepare_msg] });
     })
 };
 exports.toggleLoop = {
-    name: "loop",
-    description: "toggleLoop",
+    name: "l",
+    description: "toggleLoop :repeat_one:",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         yield index_1.guildQueue.setRepeatMode(discord_music_player_1.RepeatMode.SONG);
         console.log(discord_music_player_1.RepeatMode);
         const prepare_msg = new discord_js_1.MessageEmbed();
-        prepare_msg.setTitle("toggle repeat!");
+        prepare_msg.setTitle("toggle repeat! :repeat_one: ");
         yield message.channel.send({ embeds: [prepare_msg] });
     })
 };
 exports.toggleQueueLoop = {
-    name: "loopqueue",
-    description: "toggleLoopQueue",
+    name: "ql",
+    description: "toggleLoopQueue :repeat: ",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         yield index_1.guildQueue.setRepeatMode(discord_music_player_1.RepeatMode.QUEUE);
         const prepare_msg = new discord_js_1.MessageEmbed();
-        prepare_msg.setTitle("toggle repeat queue!");
+        prepare_msg.setTitle("toggle repeat queue! :repeat: ");
         yield message.channel.send({ embeds: [prepare_msg] });
     })
 };
 exports.setVolume = {
-    name: "setvolume",
-    description: "setVolume",
+    name: "sv",
+    description: "setVolume :sound: ",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         const prepare_msg = new discord_js_1.MessageEmbed();
         let args = message.content.trim();
         let vol = args.substring(10, args.length);
         console.log(message.author.username + "set volume :" + vol);
         yield index_1.guildQueue.setVolume(parseInt(vol));
-        prepare_msg.setTitle("already set volume :" + index_1.guildQueue.volume);
+        prepare_msg.setTitle("already set volume :sound: " + index_1.guildQueue.volume);
         yield message.channel.send({ embeds: [prepare_msg] });
     })
 };
 exports.getVolume = {
     name: "volume",
-    description: "print volume",
+    description: "current volume :sound: ",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         const prepare_msg = new discord_js_1.MessageEmbed();
-        prepare_msg.setTitle("now volume :" + index_1.guildQueue.volume);
+        prepare_msg.setTitle("current volume :sound: " + index_1.guildQueue.volume);
         yield message.channel.send({ embeds: [prepare_msg] });
     })
 };
 exports.seequeue = {
-    name: "list",
-    description: "see play list",
+    name: "queue",
+    description: "see play list ",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         const prepare_msg = new discord_js_1.MessageEmbed();
         let queue = index_1.player.createQueue(message.guildId);
-        prepare_msg.setTitle("now playiing :" + queue.nowPlaying);
-        for (let i = 0; i < index_1.guildQueue.songs.length; i++) {
-            let str = index_1.guildQueue.songs[i].name;
-            let duration = index_1.guildQueue.songs[i].duration;
-            prepare_msg.addField(str, duration);
+        try {
+            prepare_msg.setTitle("Now playiing :" + queue.nowPlaying);
+            prepare_msg.addField('\u200b', '\u200b');
+            prepare_msg.setColor("PURPLE");
+            for (let i = 0; i < index_1.guildQueue.songs.length; i++) {
+                let str = index_1.guildQueue.songs[i].name;
+                let duration = index_1.guildQueue.songs[i].duration;
+                prepare_msg.addField(str, duration);
+            }
         }
+        catch (TypeError) {
+            prepare_msg.setTitle("The queue is empty !");
+        }
+        prepare_msg.setTimestamp();
         yield message.channel.send({ embeds: [prepare_msg] });
     })
 };

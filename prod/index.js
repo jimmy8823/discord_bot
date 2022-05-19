@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.guildQueue = exports.player = void 0;
+exports.image = exports.guildQueue = exports.player = void 0;
 const discord_js_1 = require("discord.js");
 const connectDatabase_1 = require("./database/connectDatabase");
 const validateEnv_1 = require("./utils/validateEnv");
@@ -19,6 +19,7 @@ const Bot = new discord_js_1.Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUI
 exports.player = new discord_music_player_1.Player(Bot, {
     leaveOnEmpty: true, // This options are optional.
 });
+exports.image = [];
 (() => __awaiter(void 0, void 0, void 0, function* () {
     if (!(0, validateEnv_1.validateEnv)())
         return; // 抓取不到env中的內容
