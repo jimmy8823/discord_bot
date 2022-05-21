@@ -7,7 +7,7 @@ export interface DBInt extends Document{
 
 export const DB = new Schema({
     discordId: String,
-    round: Number,
+    count: Number,
 });
 
 export default model<DBInt>("DBmodel", DB);

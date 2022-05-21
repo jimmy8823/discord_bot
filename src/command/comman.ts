@@ -1,9 +1,7 @@
 import { CommandInt } from "../interfaces/CommandInt";
 import DBmodel from "../database/models/DBmodel";
-import { MessageEmbed } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import { CommandList } from "./_CommandList";
-import { RequestInfo, RequestInit } from 'node-fetch';
-import * as cheerio from 'cheerio';
 import axios from "axios";
 import { image } from "../index";
 import { Image_data } from "../interfaces/imagestructure"
@@ -42,42 +40,50 @@ export const help: CommandInt = {
             prepare_msg.setTitle("Command list");
             prepare_msg.addField('\u200b', '\u200b');
             for(let i=0;i<CommandList.length;i++){
-                prepare_msg.addField(CommandList[i].name,CommandList[i].description);
+                prepare_msg.addField("+"+CommandList[i].name,CommandList[i].description);
             }
             prepare_msg.setThumbnail("https://i.imgur.com/9wCBpdg.jpeg")
             prepare_msg.setTimestamp();
             await channel.send({ embeds : [prepare_msg] });
     }
 }
+
 export const hentai: CommandInt = {
     name : "hentai",
-    description : "see hentai",
+    description : ":underage: usage: +hentai or +hentai tag # if want to use multi tag use +, english only",
     run : async (message) => {
-        await get_hentai();
-        const{ author, channel, content } = message;
         const prepare_msg = new MessageEmbed();
-        //prepare_msg.setdDescription();
-        let rnd = getRndInteger(0,image.length);
-        console.log(image[rnd].score +"    "+image[rnd].tag);
-        prepare_msg.setTitle(" [ Yande.re ]     Id  : " + image[rnd].id);
-        prepare_msg.addField(" Score :", image[rnd].score.toString() ,true);
-        prepare_msg.addField('\u200b', '\u200b',true);
-        prepare_msg.addField(" Tag :", image[rnd].tag.toString() ,true);
-        prepare_msg.setImage(image[rnd].url as string);
-        
-        prepare_msg.setURL(image[rnd].url as string);
-        prepare_msg.setFooter(
-            author.username + "#" + author.discriminator,
-            author.displayAvatarURL()
-        );
-        prepare_msg.setTimestamp();
-        await channel.send({ embeds : [prepare_msg] });
-        globalThis.h_count += 1;
-        console.log(globalThis.h_count);
+        if(message.content.length>7){
+            let query = message.content.substring(8,);
+            console.log(query);
+            get_hentai_bytag(query,message);
+        }else{
+            await get_hentai();
+            const{ author, channel, content } = message;
+            //prepare_msg.setdDescription();
+            let rnd = await getRndInteger(0,image.length);
+            let detail_url = "https://yande.re/post/show/" + image[rnd].id;
+            console.log(image[rnd].score +"    "+image[rnd].tag);
+            prepare_msg.setTitle(" [ Yande.re ]     :regional_indicator_i: :regional_indicator_d:   : " + image[rnd].id);
+            prepare_msg.addField(" Score :", image[rnd].score.toString() ,true);
+            prepare_msg.addField('\u200b', '\u200b',true);
+            prepare_msg.addField(" Tag :", image[rnd].tag.toString() ,true);
+            prepare_msg.setImage(image[rnd].url as string);
+            prepare_msg.setURL(detail_url);
+            prepare_msg.setFooter(
+                author.username + "#" + author.discriminator,
+                author.displayAvatarURL()
+            );
+            prepare_msg.setTimestamp();
+            await channel.send({ embeds : [prepare_msg] });
+            globalThis.h_count += 1;
+            console.log(globalThis.h_count +"  " + image.length);
+        }
     }
 }
 const get_hentai = async()=>{
-    if(image.length<=0 || globalThis.h_count>=20){
+    if(image.length<=0 || globalThis.h_count>=5){
+        await clear_list();
         const response = await axios.get('https://yande.re/post/popular_recent.json?api_version=2')
         .then( (response) => {
             console.log("request to yande.re");
@@ -96,7 +102,36 @@ const get_hentai = async()=>{
         .catch( (error) => console.log(error)) 
     }
 }
+const  get_hentai_bytag = async(query:string,message:Message)=>{
+    const response = await axios.get('https://yande.re/post.json?tags='+ query +'&limit=40&api_version=2')
+    .then((response)=>{
+        console.log(response.status);
+        const prepare_msg = new MessageEmbed();
+        let data = response.data;
+        if(data.posts.length<=0){
+            prepare_msg.setTitle(" not found from this tag !");
+        }else{
+            let rnd = getRndInteger(0,data.posts.length);
+            let detail_url = "https://yande.re/post/show/" + data.posts[rnd].id;
+            console.log(data.posts[rnd].score +"    "+data.posts[rnd].tags);
+            prepare_msg.setTitle(" [ Yande.re ]     :regional_indicator_i: :regional_indicator_d:   : " + data.posts[rnd].id);
+            prepare_msg.addField(" Score :", data.posts[rnd].score.toString() ,true);
+            prepare_msg.addField('\u200b', '\u200b',true);
+            prepare_msg.addField(" Tag :", data.posts[rnd].tags.toString() ,true);
+            prepare_msg.setImage(data.posts[rnd].jpeg_url as string);
+            prepare_msg.setURL(detail_url);
+            prepare_msg.setFooter(
+                message.author.username + "#" + message.author.discriminator,
+                message.author.displayAvatarURL()
+            );
+            prepare_msg.setTimestamp();
+        }
+        message.channel.send({ embeds : [prepare_msg] });
+    })
+    .catch((error)=> console.log(error));
+};
 
 function getRndInteger(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
+const clear_list = ()=>{while(image.length>0){image.pop();}};

@@ -35,16 +35,31 @@ export const playlist: CommandInt ={
         });
     }
 }
+export const join: CommandInt = {
+    name : "join",
+    description : "join voice channel",
+    run : async (message) => {
+        const{ author, channel, content ,guild , member} = message;
+        let queue = player.createQueue(message.guildId as string);
+        await queue.join(message.member!.voice.channel!);
+    }
+}
 export const skip: CommandInt ={
     name : "skip",
     description : "skip song :fast_forward: ",
     run : async (message) => {
-        guildQueue!.skip();
         const prepare_msg = new MessageEmbed();
-        prepare_msg.setTitle(
-            guildQueue!.nowPlaying +" skipped :fast_forward: "
-        );
-        await message.channel.send({ embeds : [prepare_msg] });
+        try{
+            guildQueue!.skip();
+            prepare_msg.setTitle(
+                guildQueue!.nowPlaying +" skipped :fast_forward: "
+            );
+            await message.channel.send({ embeds : [prepare_msg] });
+        }catch(error){
+            prepare_msg.setTitle(
+                "Something go wrong!"
+            );
+        }
     }
 }
 export const stop: CommandInt ={

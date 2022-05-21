@@ -15,18 +15,60 @@ const connectDatabase_1 = require("./database/connectDatabase");
 const validateEnv_1 = require("./utils/validateEnv");
 const onMessage_1 = require("./event/onMessage");
 const discord_music_player_1 = require("discord-music-player");
-const Bot = new discord_js_1.Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"] });
+const Bot = new discord_js_1.Client({
+    intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "GUILD_MESSAGE_REACTIONS"],
+    partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+});
 exports.player = new discord_music_player_1.Player(Bot, {
-    leaveOnEmpty: true, // This options are optional.
+    leaveOnEmpty: true,
+    leaveOnStop: false,
 });
 exports.image = [];
 (() => __awaiter(void 0, void 0, void 0, function* () {
     if (!(0, validateEnv_1.validateEnv)())
         return; // 抓取不到env中的內容
-    Bot.on("ready", () => console.log("Connected to Discord!"));
+    Bot.on("ready", () => __awaiter(void 0, void 0, void 0, function* () {
+        console.log("Connected to Discord!");
+    }));
     Bot.on("messageCreate", (message) => __awaiter(void 0, void 0, void 0, function* () {
         exports.guildQueue = exports.player.getQueue(message.guildId);
         yield (0, onMessage_1.onMessage)(message);
+    }));
+    Bot.on("MessageReactionAdd", (reaction, user) => __awaiter(void 0, void 0, void 0, function* () {
+        // When a reaction is received, check if the structure is partial
+        if (reaction.partial) {
+            // If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
+            try {
+                yield reaction.fetch();
+            }
+            catch (error) {
+                console.error('Something went wrong when fetching the message:', error);
+                // Return as `reaction.message.author` may be undefined/null
+                return;
+            }
+        }
+        // Now the message has been cached and is fully available
+        console.log(`${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`);
+        // The reaction is now also fully available and the properties will be reflected accurately:
+        console.log(`${reaction.count} user(s) have given the same reaction to this message!`);
+    }));
+    Bot.on("MessageReactionRemove", (reaction, user) => __awaiter(void 0, void 0, void 0, function* () {
+        // When a reaction is received, check if the structure is partial
+        if (reaction.partial) {
+            // If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
+            try {
+                yield reaction.fetch();
+            }
+            catch (error) {
+                console.error('Something went wrong when fetching the message:', error);
+                // Return as `reaction.message.author` may be undefined/null
+                return;
+            }
+        }
+        // Now the message has been cached and is fully available
+        console.log(`${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`);
+        // The reaction is now also fully available and the properties will be reflected accurately:
+        console.log(`${reaction.count} user(s) have given the same reaction to this message!`);
     }));
     yield (0, connectDatabase_1.connectDatabase)();
     yield Bot.login(process.env.TOKEN);

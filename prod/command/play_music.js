@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.seequeue = exports.getVolume = exports.setVolume = exports.toggleQueueLoop = exports.toggleLoop = exports.removeLoop = exports.stop = exports.skip = exports.playlist = exports.play = void 0;
+exports.seequeue = exports.getVolume = exports.setVolume = exports.toggleQueueLoop = exports.toggleLoop = exports.removeLoop = exports.stop = exports.skip = exports.join = exports.playlist = exports.play = void 0;
 const discord_js_1 = require("discord.js");
 const index_1 = require("../index");
 const discord_music_player_1 = require("discord-music-player");
@@ -43,14 +43,28 @@ exports.playlist = {
         });
     })
 };
+exports.join = {
+    name: "join",
+    description: "join voice channel",
+    run: (message) => __awaiter(void 0, void 0, void 0, function* () {
+        const { author, channel, content, guild, member } = message;
+        let queue = index_1.player.createQueue(message.guildId);
+        yield queue.join(message.member.voice.channel);
+    })
+};
 exports.skip = {
     name: "skip",
     description: "skip song :fast_forward: ",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
-        index_1.guildQueue.skip();
         const prepare_msg = new discord_js_1.MessageEmbed();
-        prepare_msg.setTitle(index_1.guildQueue.nowPlaying + " skipped :fast_forward: ");
-        yield message.channel.send({ embeds: [prepare_msg] });
+        try {
+            index_1.guildQueue.skip();
+            prepare_msg.setTitle(index_1.guildQueue.nowPlaying + " skipped :fast_forward: ");
+            yield message.channel.send({ embeds: [prepare_msg] });
+        }
+        catch (error) {
+            prepare_msg.setTitle("Something go wrong!");
+        }
     })
 };
 exports.stop = {

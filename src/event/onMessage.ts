@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import { CommandList } from "../command/_CommandList";
 
-const prefix = "-";
+const prefix = "+";
 
 export const onMessage = async(message: Message)=>{
     if (message.author.bot) {
