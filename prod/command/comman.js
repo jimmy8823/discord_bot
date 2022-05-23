@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hentai = exports.help = exports.test = void 0;
-const DBmodel_1 = __importDefault(require("../database/models/DBmodel"));
 const discord_js_1 = require("discord.js");
 const _CommandList_1 = require("./_CommandList");
 const axios_1 = __importDefault(require("axios"));
@@ -23,18 +22,18 @@ exports.test = {
     description: "test",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         const { author, channel, content } = message;
-        let targetdata = yield DBmodel_1.default.findOne({ discordId: author.id });
+        //let targetdata = await DBmodel.findOne({ discordId: author.id });
         let text = "島民為甚麼不念台大!";
-        if (!targetdata) {
-            targetdata = yield DBmodel_1.default.create({
+        /*if(!targetdata){
+            targetdata = await DBmodel.create({
                 discordId: author.id,
                 count: 0
             });
-            yield targetdata.save();
-        }
+            await targetdata.save();
+        }*/
         const prepare_msg = new discord_js_1.MessageEmbed();
         prepare_msg.setTitle("哈兔大聯盟 哈!");
-        prepare_msg.setdDescription(text);
+        prepare_msg.setDescription(text);
         prepare_msg.setAuthor(author.username + "#" + author.discriminator, author.displayAvatarURL());
         prepare_msg.setImage("https://i.imgur.com/9wCBpdg.jpeg");
         yield channel.send({ embeds: [prepare_msg] });
@@ -49,7 +48,7 @@ exports.help = {
         prepare_msg.setTitle("Command list");
         prepare_msg.addField('\u200b', '\u200b');
         for (let i = 0; i < _CommandList_1.CommandList.length; i++) {
-            prepare_msg.addField("+" + _CommandList_1.CommandList[i].name, _CommandList_1.CommandList[i].description);
+            prepare_msg.addField("+`" + _CommandList_1.CommandList[i].name + "`", _CommandList_1.CommandList[i].description);
         }
         prepare_msg.setThumbnail("https://i.imgur.com/9wCBpdg.jpeg");
         prepare_msg.setTimestamp();
@@ -70,25 +69,31 @@ exports.hentai = {
             yield get_hentai();
             const { author, channel, content } = message;
             //prepare_msg.setdDescription();
-            let rnd = yield getRndInteger(0, index_1.image.length);
+            let rnd = yield globalThis.rnd_number.pop();
             let detail_url = "https://yande.re/post/show/" + index_1.image[rnd].id;
             console.log(index_1.image[rnd].score + "    " + index_1.image[rnd].tag);
-            prepare_msg.setTitle(" [ Yande.re ]     :regional_indicator_i: :regional_indicator_d:   : " + index_1.image[rnd].id);
+            prepare_msg.setTitle("yande.re " + index_1.image[rnd].id + ".jpg");
+            //prepare_msg.setTitle(" [ Yande.re ]     :regional_indicator_i: :regional_indicator_d:   : " + image[rnd!].id);
+            //prepare_msg.setURL(detail_url);
+            prepare_msg.setDescription(detail_url);
+            prepare_msg.setURL(index_1.image[rnd].url);
             prepare_msg.addField(" Score :", index_1.image[rnd].score.toString(), true);
             prepare_msg.addField('\u200b', '\u200b', true);
             prepare_msg.addField(" Tag :", index_1.image[rnd].tag.toString(), true);
             prepare_msg.setImage(index_1.image[rnd].url);
-            prepare_msg.setURL(detail_url);
             prepare_msg.setFooter(author.username + "#" + author.discriminator, author.displayAvatarURL());
             prepare_msg.setTimestamp();
-            yield channel.send({ embeds: [prepare_msg] });
-            globalThis.h_count += 1;
-            console.log(globalThis.h_count + "  " + index_1.image.length);
+            const send_msg = yield channel.send({ embeds: [prepare_msg] });
+            send_msg.react('♻️');
+            console.log(globalThis.rnd_number.length + "  " + index_1.image.length);
+            message.delete().catch((error) => {
+                console.log(error);
+            });
         }
     })
 };
 const get_hentai = () => __awaiter(void 0, void 0, void 0, function* () {
-    if (index_1.image.length <= 0 || globalThis.h_count >= 5) {
+    if (index_1.image.length <= 0 || globalThis.rnd_number.length <= 0) {
         yield clear_list();
         const response = yield axios_1.default.get('https://yande.re/post/popular_recent.json?api_version=2')
             .then((response) => {
@@ -102,17 +107,28 @@ const get_hentai = () => __awaiter(void 0, void 0, void 0, function* () {
                     tag: data[i].tags,
                 };
                 index_1.image.push(img);
-                globalThis.h_count = 0;
+            }
+            globalThis.rnd_number = [];
+            for (let j = 0; j < 5; j++) { //get 5 different random number
+                let rnd = getRndInteger(0, index_1.image.length);
+                //console.log(rnd);
+                if (globalThis.rnd_number.indexOf(rnd) == -1 || globalThis.rnd_number === undefined) {
+                    //console.log("add" + rnd +"to list");
+                    globalThis.rnd_number.push(rnd);
+                }
+                else {
+                    j--;
+                }
             }
         })
             .catch((error) => console.log(error));
     }
 });
 const get_hentai_bytag = (query, message) => __awaiter(void 0, void 0, void 0, function* () {
+    const prepare_msg = new discord_js_1.MessageEmbed();
     const response = yield axios_1.default.get('https://yande.re/post.json?tags=' + query + '&limit=40&api_version=2')
         .then((response) => {
         console.log(response.status);
-        const prepare_msg = new discord_js_1.MessageEmbed();
         let data = response.data;
         if (data.posts.length <= 0) {
             prepare_msg.setTitle(" not found from this tag !");
@@ -130,9 +146,16 @@ const get_hentai_bytag = (query, message) => __awaiter(void 0, void 0, void 0, f
             prepare_msg.setFooter(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL());
             prepare_msg.setTimestamp();
         }
-        message.channel.send({ embeds: [prepare_msg] });
     })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+        console.log(error);
+        prepare_msg.setTitle(" error happened when request to yande.re!");
+    });
+    const send_msg = yield message.channel.send({ embeds: [prepare_msg] });
+    send_msg.react('♻️');
+    message.delete().catch((error) => {
+        console.log(error);
+    });
 });
 function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

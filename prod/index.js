@@ -15,8 +15,9 @@ const connectDatabase_1 = require("./database/connectDatabase");
 const validateEnv_1 = require("./utils/validateEnv");
 const onMessage_1 = require("./event/onMessage");
 const discord_music_player_1 = require("discord-music-player");
+const onReactionChange_1 = require("./event/onReactionChange");
 const Bot = new discord_js_1.Client({
-    intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "GUILD_MESSAGE_REACTIONS"],
+    intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "GUILD_MESSAGE_REACTIONS", "DIRECT_MESSAGES"],
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 exports.player = new discord_music_player_1.Player(Bot, {
@@ -34,7 +35,7 @@ exports.image = [];
         exports.guildQueue = exports.player.getQueue(message.guildId);
         yield (0, onMessage_1.onMessage)(message);
     }));
-    Bot.on("MessageReactionAdd", (reaction, user) => __awaiter(void 0, void 0, void 0, function* () {
+    Bot.on("messageReactionAdd", (reaction, user) => __awaiter(void 0, void 0, void 0, function* () {
         // When a reaction is received, check if the structure is partial
         if (reaction.partial) {
             // If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
@@ -47,12 +48,14 @@ exports.image = [];
                 return;
             }
         }
+        (0, onReactionChange_1.onReactionChange)(reaction, user, true);
         // Now the message has been cached and is fully available
         console.log(`${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`);
         // The reaction is now also fully available and the properties will be reflected accurately:
         console.log(`${reaction.count} user(s) have given the same reaction to this message!`);
     }));
-    Bot.on("MessageReactionRemove", (reaction, user) => __awaiter(void 0, void 0, void 0, function* () {
+    Bot.on("messageReactionRemove", (reaction, user) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
         // When a reaction is received, check if the structure is partial
         if (reaction.partial) {
             // If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
@@ -64,9 +67,11 @@ exports.image = [];
                 // Return as `reaction.message.author` may be undefined/null
                 return;
             }
+            //onReactionChange(reaction,user,false);
         }
+        (0, onReactionChange_1.onReactionChange)(reaction, user, false);
         // Now the message has been cached and is fully available
-        console.log(`${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`);
+        console.log(`${(_a = reaction.message.author) === null || _a === void 0 ? void 0 : _a.id}'s message "${reaction.emoji.name}" gained a reaction!`);
         // The reaction is now also fully available and the properties will be reflected accurately:
         console.log(`${reaction.count} user(s) have given the same reaction to this message!`);
     }));
