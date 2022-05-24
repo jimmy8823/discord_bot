@@ -80,7 +80,7 @@ export const hentai: CommandInt = {
             );
             prepare_msg.setTimestamp();
             const send_msg = await channel.send({ embeds : [prepare_msg] });
-            send_msg.react('♻️');
+            send_msg.react('♻️')
             console.log(globalThis.rnd_number.length +"  " + image.length);
             message.delete().catch((error)=>{
                 console.log(error);
@@ -105,7 +105,7 @@ const get_hentai = async()=>{
                 image.push(img);
             }
             globalThis.rnd_number=[];
-            for(let j=0;j<5;j++){ //get 5 different random number
+            for(let j=0;j<8;j++){ //get 5 different random number
                 let rnd = getRndInteger(0,image.length);
                 //console.log(rnd);
                 if(globalThis.rnd_number.indexOf(rnd)==-1||globalThis.rnd_number===undefined){
