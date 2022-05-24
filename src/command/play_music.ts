@@ -66,11 +66,19 @@ export const stop: CommandInt ={
     name : "stop",
     description : "stop song :stop_button: ",
     run : async (message) => {
-        guildQueue!.stop();
         const prepare_msg = new MessageEmbed();
-        prepare_msg.setTitle(
-            "Music stop :stop_button: "
-        );
+        try{
+            guildQueue!.stop();
+            prepare_msg.setTitle(
+                "Music stop :stop_button: "
+            );
+        }catch(error){
+            prepare_msg.setTitle(
+                "Something go wrong!"
+            );
+        }
+        
+        
         await message.channel.send({ embeds : [prepare_msg] });
     }
 }

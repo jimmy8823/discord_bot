@@ -124,11 +124,11 @@ const  get_hentai_bytag = async(query:string,message:Message)=>{
     const response = await axios.get('https://yande.re/post.json?tags='+ query +'&limit=40&api_version=2')
     .then((response)=>{
         console.log(response.status);
-        let data = response.data;
+        let data = response.data; // response json file contain id,url,score,tag etc... 
         if(data.posts.length<=0){
             prepare_msg.setTitle(" not found from this tag !");
         }else{
-            let rnd = getRndInteger(0,data.posts.length);
+            let rnd = getRndInteger(0,data.posts.length); // get rnd number to get pic
             let detail_url = "https://yande.re/post/show/" + data.posts[rnd].id;
             console.log(data.posts[rnd].score +"    "+data.posts[rnd].tags);
             prepare_msg.setTitle(" [ Yande.re ]     :regional_indicator_i: :regional_indicator_d:   : " + data.posts[rnd].id);

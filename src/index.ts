@@ -8,11 +8,11 @@ import { Image_data } from "./interfaces/imagestructure";
 import { onReactionChange } from "./event/onReactionChange";
 
 const Bot = new Client({ 
-    intents: ["GUILDS", "GUILD_MESSAGES","GUILD_VOICE_STATES","GUILD_MESSAGE_REACTIONS","DIRECT_MESSAGES"],
+    intents: ["GUILDS", "GUILD_MESSAGES","GUILD_VOICE_STATES","GUILD_MESSAGE_REACTIONS","DIRECT_MESSAGES"], //gateway setting
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 export const player = new Player(Bot,{
-        leaveOnEmpty: true, // This options are optional.
+        leaveOnEmpty: true, // setting music player option
         leaveOnStop: false,
 });
 
