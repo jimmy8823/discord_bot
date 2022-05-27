@@ -109,7 +109,7 @@ const get_hentai = () => __awaiter(void 0, void 0, void 0, function* () {
                 index_1.image.push(img);
             }
             globalThis.rnd_number = [];
-            for (let j = 0; j < 5; j++) { //get 5 different random number
+            for (let j = 0; j < 8; j++) { //get 5 different random number
                 let rnd = getRndInteger(0, index_1.image.length);
                 //console.log(rnd);
                 if (globalThis.rnd_number.indexOf(rnd) == -1 || globalThis.rnd_number === undefined) {
@@ -129,12 +129,12 @@ const get_hentai_bytag = (query, message) => __awaiter(void 0, void 0, void 0, f
     const response = yield axios_1.default.get('https://yande.re/post.json?tags=' + query + '&limit=40&api_version=2')
         .then((response) => {
         console.log(response.status);
-        let data = response.data;
+        let data = response.data; // response json file contain id,url,score,tag etc... 
         if (data.posts.length <= 0) {
             prepare_msg.setTitle(" not found from this tag !");
         }
         else {
-            let rnd = getRndInteger(0, data.posts.length);
+            let rnd = getRndInteger(0, data.posts.length); // get rnd number to get pic
             let detail_url = "https://yande.re/post/show/" + data.posts[rnd].id;
             console.log(data.posts[rnd].score + "    " + data.posts[rnd].tags);
             prepare_msg.setTitle(" [ Yande.re ]     :regional_indicator_i: :regional_indicator_d:   : " + data.posts[rnd].id);

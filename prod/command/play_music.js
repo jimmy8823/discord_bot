@@ -71,9 +71,14 @@ exports.stop = {
     name: "stop",
     description: "stop song :stop_button: ",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
-        index_1.guildQueue.stop();
         const prepare_msg = new discord_js_1.MessageEmbed();
-        prepare_msg.setTitle("Music stop :stop_button: ");
+        try {
+            index_1.guildQueue.stop();
+            prepare_msg.setTitle("Music stop :stop_button: ");
+        }
+        catch (error) {
+            prepare_msg.setTitle("Something go wrong!");
+        }
         yield message.channel.send({ embeds: [prepare_msg] });
     })
 };
