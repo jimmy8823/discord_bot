@@ -17,7 +17,7 @@ const onMessage_1 = require("./event/onMessage");
 const discord_music_player_1 = require("discord-music-player");
 const onReactionChange_1 = require("./event/onReactionChange");
 const Bot = new discord_js_1.Client({
-    intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "GUILD_MESSAGE_REACTIONS", "DIRECT_MESSAGES"],
+    intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "GUILD_MESSAGE_REACTIONS", "DIRECT_MESSAGES", "DIRECT_MESSAGE_REACTIONS"],
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 exports.player = new discord_music_player_1.Player(Bot, {

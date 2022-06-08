@@ -29,15 +29,16 @@ exports.play = {
     })
 };
 exports.playlist = {
-    name: "playlist",
+    name: "lp",
     description: "play list :musical_note:",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         const { author, channel, content, guild, member } = message;
         const args = message.content.trim();
-        const url = args.substring(5, args.length);
+        const url = args.substring(4, args.length);
+        console.log(url);
         let queue = index_1.player.createQueue(message.guildId);
         yield queue.join(message.member.voice.channel);
-        let song = yield queue.play(url).catch(_ => {
+        let song = yield queue.playlist(url).catch(_ => {
             if (!index_1.guildQueue)
                 queue.stop();
         });
@@ -94,7 +95,7 @@ exports.removeLoop = {
     })
 };
 exports.toggleLoop = {
-    name: "l",
+    name: "loop",
     description: "toggleLoop :repeat_one:",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         yield index_1.guildQueue.setRepeatMode(discord_music_player_1.RepeatMode.SONG);
@@ -120,7 +121,7 @@ exports.setVolume = {
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         const prepare_msg = new discord_js_1.MessageEmbed();
         let args = message.content.trim();
-        let vol = args.substring(10, args.length);
+        let vol = args.substring(4, args.length);
         console.log(message.author.username + "set volume :" + vol);
         yield index_1.guildQueue.setVolume(parseInt(vol));
         prepare_msg.setTitle("already set volume :sound: " + index_1.guildQueue.volume);
@@ -146,7 +147,14 @@ exports.seequeue = {
             prepare_msg.setTitle("Now playiing :" + queue.nowPlaying);
             prepare_msg.addField('\u200b', '\u200b');
             prepare_msg.setColor("PURPLE");
-            for (let i = 0; i < index_1.guildQueue.songs.length; i++) {
+            let limit = 0;
+            if (index_1.guildQueue.songs.length > 10) {
+                limit = 10;
+            }
+            else {
+                limit = index_1.guildQueue.songs.length;
+            }
+            for (let i = 1; i <= limit; i++) {
                 let str = index_1.guildQueue.songs[i].name;
                 let duration = index_1.guildQueue.songs[i].duration;
                 prepare_msg.addField(str, duration);

@@ -8,7 +8,7 @@ import { Image_data } from "./interfaces/imagestructure";
 import { onReactionChange } from "./event/onReactionChange";
 
 const Bot = new Client({ 
-    intents: ["GUILDS", "GUILD_MESSAGES","GUILD_VOICE_STATES","GUILD_MESSAGE_REACTIONS","DIRECT_MESSAGES"], //gateway setting
+    intents: ["GUILDS", "GUILD_MESSAGES","GUILD_VOICE_STATES","GUILD_MESSAGE_REACTIONS","DIRECT_MESSAGES","DIRECT_MESSAGE_REACTIONS"], //gateway setting
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 export const player = new Player(Bot,{
