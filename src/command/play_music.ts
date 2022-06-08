@@ -65,7 +65,7 @@ export const skip: CommandInt ={
 }
 export const stop: CommandInt ={
     name : "stop",
-    description : "stop song :stop_button: ",
+    description : "stop song and leave :stop_button: ",
     run : async (message) => {
         const prepare_msg = new MessageEmbed();
         try{
@@ -155,17 +155,17 @@ export const seequeue: CommandInt ={
         let queue = player.createQueue(message.guildId as string);
         try{
             prepare_msg.setTitle(
-            "Now playiing :" + queue.nowPlaying 
+                "Now playiing :" + queue.nowPlaying
             );
             prepare_msg.addField('\u200b', '\u200b');
             prepare_msg.setColor("PURPLE");
-            let limit = 0;
+            let limit = 2;
             if(guildQueue!.songs.length>10){
                 limit = 10;
             }else{
                 limit = guildQueue!.songs.length;
             }
-            for(let i=1;i<=limit;i++){
+            for(let i=1;i<limit;i++){
                 let str = guildQueue!.songs[i].name as string;
                 let duration = guildQueue!.songs[i].duration;
                 prepare_msg.addField(str,duration);
@@ -177,5 +177,59 @@ export const seequeue: CommandInt ={
         }
         prepare_msg.setTimestamp();
         await message.channel.send({ embeds : [prepare_msg] });
+    }
+}
+export const pause: CommandInt ={
+    name : "pause",
+    description : "pause music :pause_button:",
+    run : async (message) => {
+        const prepare_msg = new MessageEmbed();
+        try{
+            guildQueue!.setPaused(true);
+            prepare_msg.setTitle(
+                " Music Paused :pause_button: "
+            );
+            await message.channel.send({ embeds : [prepare_msg] });
+        }catch(error){
+            prepare_msg.setTitle(
+                "Something go wrong!"
+            );
+        }
+    }
+}
+export const resume: CommandInt ={
+    name : "resume",
+    description : "resume music :arrow_forward: ",
+    run : async (message) => {
+        const prepare_msg = new MessageEmbed();
+        try{
+            guildQueue!.setPaused(false);
+            prepare_msg.setTitle(
+                " Music resumed :arrow_forward: "
+            );
+            await message.channel.send({ embeds : [prepare_msg] });
+        }catch(error){
+            prepare_msg.setTitle(
+                "Something go wrong!"
+            );
+        }
+    }
+}
+export const shuffle: CommandInt ={
+    name : "shuffle",
+    description : "shuffle the queue :twisted_rightwards_arrows: ",
+    run : async (message) => {
+        const prepare_msg = new MessageEmbed();
+        try{
+            guildQueue!.shuffle();
+            prepare_msg.setTitle(
+                " Shuffle :twisted_rightwards_arrows:  "
+            );
+            await message.channel.send({ embeds : [prepare_msg] });
+        }catch(error){
+            prepare_msg.setTitle(
+                "Something go wrong!"
+            );
+        }
     }
 }

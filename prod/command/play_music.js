@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.seequeue = exports.getVolume = exports.setVolume = exports.toggleQueueLoop = exports.toggleLoop = exports.removeLoop = exports.stop = exports.skip = exports.join = exports.playlist = exports.play = void 0;
+exports.shuffle = exports.resume = exports.pause = exports.seequeue = exports.getVolume = exports.setVolume = exports.toggleQueueLoop = exports.toggleLoop = exports.removeLoop = exports.stop = exports.skip = exports.join = exports.playlist = exports.play = void 0;
 const discord_js_1 = require("discord.js");
 const index_1 = require("../index");
 const discord_music_player_1 = require("discord-music-player");
@@ -147,14 +147,14 @@ exports.seequeue = {
             prepare_msg.setTitle("Now playiing :" + queue.nowPlaying);
             prepare_msg.addField('\u200b', '\u200b');
             prepare_msg.setColor("PURPLE");
-            let limit = 0;
+            let limit = 2;
             if (index_1.guildQueue.songs.length > 10) {
                 limit = 10;
             }
             else {
                 limit = index_1.guildQueue.songs.length;
             }
-            for (let i = 1; i <= limit; i++) {
+            for (let i = 1; i < limit; i++) {
                 let str = index_1.guildQueue.songs[i].name;
                 let duration = index_1.guildQueue.songs[i].duration;
                 prepare_msg.addField(str, duration);
@@ -165,5 +165,50 @@ exports.seequeue = {
         }
         prepare_msg.setTimestamp();
         yield message.channel.send({ embeds: [prepare_msg] });
+    })
+};
+exports.pause = {
+    name: "pause",
+    description: "pause music :pause_button:",
+    run: (message) => __awaiter(void 0, void 0, void 0, function* () {
+        const prepare_msg = new discord_js_1.MessageEmbed();
+        try {
+            index_1.guildQueue.setPaused(true);
+            prepare_msg.setTitle(" Music Paused :pause_button: ");
+            yield message.channel.send({ embeds: [prepare_msg] });
+        }
+        catch (error) {
+            prepare_msg.setTitle("Something go wrong!");
+        }
+    })
+};
+exports.resume = {
+    name: "resume",
+    description: "resume music :arrow_forward: ",
+    run: (message) => __awaiter(void 0, void 0, void 0, function* () {
+        const prepare_msg = new discord_js_1.MessageEmbed();
+        try {
+            index_1.guildQueue.setPaused(false);
+            prepare_msg.setTitle(" Music resumed :arrow_forward: ");
+            yield message.channel.send({ embeds: [prepare_msg] });
+        }
+        catch (error) {
+            prepare_msg.setTitle("Something go wrong!");
+        }
+    })
+};
+exports.shuffle = {
+    name: "shuffle",
+    description: "shuffle the queue :twisted_rightwards_arrows: ",
+    run: (message) => __awaiter(void 0, void 0, void 0, function* () {
+        const prepare_msg = new discord_js_1.MessageEmbed();
+        try {
+            index_1.guildQueue.shuffle();
+            prepare_msg.setTitle(" Shuffle :twisted_rightwards_arrows:  ");
+            yield message.channel.send({ embeds: [prepare_msg] });
+        }
+        catch (error) {
+            prepare_msg.setTitle("Something go wrong!");
+        }
     })
 };
