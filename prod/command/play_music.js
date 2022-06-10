@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.shuffle = exports.resume = exports.pause = exports.seequeue = exports.getVolume = exports.setVolume = exports.toggleQueueLoop = exports.toggleLoop = exports.removeLoop = exports.stop = exports.skip = exports.join = exports.playlist = exports.play = void 0;
+exports.remove = exports.shuffle = exports.resume = exports.pause = exports.seequeue = exports.getVolume = exports.setVolume = exports.toggleQueueLoop = exports.toggleLoop = exports.removeLoop = exports.stop = exports.skip = exports.join = exports.playlist = exports.play = void 0;
 const discord_js_1 = require("discord.js");
 const index_1 = require("../index");
 const discord_music_player_1 = require("discord-music-player");
@@ -70,7 +70,7 @@ exports.skip = {
 };
 exports.stop = {
     name: "stop",
-    description: "stop song :stop_button: ",
+    description: "stop song and leave :stop_button: ",
     run: (message) => __awaiter(void 0, void 0, void 0, function* () {
         const prepare_msg = new discord_js_1.MessageEmbed();
         try {
@@ -155,7 +155,7 @@ exports.seequeue = {
                 limit = index_1.guildQueue.songs.length;
             }
             for (let i = 1; i < limit; i++) {
-                let str = index_1.guildQueue.songs[i].name;
+                let str = globalThis.queue_index[i] + " " + index_1.guildQueue.songs[i].name;
                 let duration = index_1.guildQueue.songs[i].duration;
                 prepare_msg.addField(str, duration);
             }
@@ -205,10 +205,28 @@ exports.shuffle = {
         try {
             index_1.guildQueue.shuffle();
             prepare_msg.setTitle(" Shuffle :twisted_rightwards_arrows:  ");
-            yield message.channel.send({ embeds: [prepare_msg] });
         }
         catch (error) {
             prepare_msg.setTitle("Something go wrong!");
         }
+        yield message.channel.send({ embeds: [prepare_msg] });
+    })
+};
+exports.remove = {
+    name: "remove",
+    description: "remove song from queue usage: remove 1",
+    run: (message) => __awaiter(void 0, void 0, void 0, function* () {
+        const prepare_msg = new discord_js_1.MessageEmbed();
+        let args = message.content.trim();
+        let index = parseInt(args.substring(8, args.length));
+        let song_name = index_1.guildQueue.songs[index].name;
+        try {
+            index_1.guildQueue.remove(index);
+            prepare_msg.setTitle(" already remove " + song_name + " from queue");
+        }
+        catch (error) {
+            prepare_msg.setTitle("Something go wrong!");
+        }
+        yield message.channel.send({ embeds: [prepare_msg] });
     })
 };

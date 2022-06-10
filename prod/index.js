@@ -77,4 +77,5 @@ exports.image = [];
     }));
     yield (0, connectDatabase_1.connectDatabase)();
     yield Bot.login(process.env.TOKEN);
+    globalThis.queue_index = [":zero:", ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:", ":nine:", ":keycap_ten:"];
 }))();

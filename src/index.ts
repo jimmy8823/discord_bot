@@ -20,6 +20,7 @@ export var guildQueue: Queue | undefined ;
 export var image : Image_data[] =[];
 declare global {
     var rnd_number: number[];
+    var queue_index: string[];
 }
 
 (async () => {
@@ -69,4 +70,5 @@ declare global {
     });
     await connectDatabase();
     await Bot.login(process.env.TOKEN as string);
+    globalThis.queue_index = [":zero:",":one:",":two:",":three:",":four:",":five:",":six:",":seven:",":eight:",":nine:",":keycap_ten:"];
 })();

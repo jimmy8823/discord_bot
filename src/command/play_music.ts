@@ -166,7 +166,7 @@ export const seequeue: CommandInt ={
                 limit = guildQueue!.songs.length;
             }
             for(let i=1;i<limit;i++){
-                let str = guildQueue!.songs[i].name as string;
+                let str = globalThis.queue_index[i]+" " + guildQueue!.songs[i].name as string;
                 let duration = guildQueue!.songs[i].duration;
                 prepare_msg.addField(str,duration);
             }
@@ -189,12 +189,12 @@ export const pause: CommandInt ={
             prepare_msg.setTitle(
                 " Music Paused :pause_button: "
             );
-            await message.channel.send({ embeds : [prepare_msg] });
         }catch(error){
             prepare_msg.setTitle(
                 "Something go wrong!"
             );
         }
+        await message.channel.send({ embeds : [prepare_msg] });
     }
 }
 export const resume: CommandInt ={
@@ -207,12 +207,12 @@ export const resume: CommandInt ={
             prepare_msg.setTitle(
                 " Music resumed :arrow_forward: "
             );
-            await message.channel.send({ embeds : [prepare_msg] });
         }catch(error){
             prepare_msg.setTitle(
                 "Something go wrong!"
             );
         }
+        await message.channel.send({ embeds : [prepare_msg] });
     }
 }
 export const shuffle: CommandInt ={
@@ -225,11 +225,33 @@ export const shuffle: CommandInt ={
             prepare_msg.setTitle(
                 " Shuffle :twisted_rightwards_arrows:  "
             );
-            await message.channel.send({ embeds : [prepare_msg] });
+            
         }catch(error){
             prepare_msg.setTitle(
                 "Something go wrong!"
             );
         }
+        await message.channel.send({ embeds : [prepare_msg] });
+    }
+}
+export const remove: CommandInt ={
+    name : "remove",
+    description : "remove song from queue usage: remove 1",
+    run : async (message) => {
+        const prepare_msg = new MessageEmbed();
+        let args = message.content.trim();
+        let index = parseInt(args.substring(8,args.length));
+        let song_name = guildQueue!.songs[index].name;
+        try{
+            guildQueue!.remove(index);
+            prepare_msg.setTitle(
+                " already remove " + song_name + " from queue"
+            );
+        }catch(error){
+            prepare_msg.setTitle(
+                "Something go wrong!"
+            );
+        }
+        await message.channel.send({ embeds : [prepare_msg] });
     }
 }
