@@ -16,6 +16,7 @@ export const play: CommandInt = {
         let song = await queue.play(url).catch(_=> {
             if(!guildQueue)
                 queue.stop();
+            console.log("play music failed");
         });
         
     }
@@ -33,6 +34,7 @@ export const playlist: CommandInt ={
         let song = await queue.playlist(url).catch(_=> {
             if(!guildQueue)
                 queue.stop();
+            console.log("play music failed");
         });
     }
 }

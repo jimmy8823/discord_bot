@@ -25,6 +25,7 @@ exports.play = {
         let song = yield queue.play(url).catch(_ => {
             if (!index_1.guildQueue)
                 queue.stop();
+            console.log("play music failed");
         });
     })
 };
@@ -41,6 +42,7 @@ exports.playlist = {
         let song = yield queue.playlist(url).catch(_ => {
             if (!index_1.guildQueue)
                 queue.stop();
+            console.log("play music failed");
         });
     })
 };
@@ -175,11 +177,11 @@ exports.pause = {
         try {
             index_1.guildQueue.setPaused(true);
             prepare_msg.setTitle(" Music Paused :pause_button: ");
-            yield message.channel.send({ embeds: [prepare_msg] });
         }
         catch (error) {
             prepare_msg.setTitle("Something go wrong!");
         }
+        yield message.channel.send({ embeds: [prepare_msg] });
     })
 };
 exports.resume = {
@@ -190,11 +192,11 @@ exports.resume = {
         try {
             index_1.guildQueue.setPaused(false);
             prepare_msg.setTitle(" Music resumed :arrow_forward: ");
-            yield message.channel.send({ embeds: [prepare_msg] });
         }
         catch (error) {
             prepare_msg.setTitle("Something go wrong!");
         }
+        yield message.channel.send({ embeds: [prepare_msg] });
     })
 };
 exports.shuffle = {

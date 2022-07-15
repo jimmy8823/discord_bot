@@ -69,18 +69,7 @@ exports.hentai = {
             yield get_hentai();
             const { author, channel, content } = message;
             //prepare_msg.setdDescription();
-            let rnd = yield globalThis.rnd_number.pop();
-            let detail_url = "https://yande.re/post/show/" + index_1.image[rnd].id;
-            console.log(index_1.image[rnd].score + "    " + index_1.image[rnd].tag);
-            prepare_msg.setTitle("yande.re " + index_1.image[rnd].id + ".jpg");
-            //prepare_msg.setTitle(" [ Yande.re ]     :regional_indicator_i: :regional_indicator_d:   : " + image[rnd!].id);
-            //prepare_msg.setURL(detail_url);
-            prepare_msg.setDescription(detail_url);
-            prepare_msg.setURL(index_1.image[rnd].url);
-            prepare_msg.addField(" Score :", index_1.image[rnd].score.toString(), true);
-            prepare_msg.addField('\u200b', '\u200b', true);
-            prepare_msg.addField(" Tag :", index_1.image[rnd].tag.toString(), true);
-            prepare_msg.setImage(index_1.image[rnd].url);
+            yield write_embed(prepare_msg);
             prepare_msg.setFooter(author.username + "#" + author.discriminator, author.displayAvatarURL());
             prepare_msg.setTimestamp();
             const send_msg = yield channel.send({ embeds: [prepare_msg] });
@@ -91,6 +80,20 @@ exports.hentai = {
             });
         }
     })
+};
+const write_embed = (prepare_msg) => {
+    let rnd = globalThis.rnd_number.pop();
+    let detail_url = "https://yande.re/post/show/" + index_1.image[rnd].id;
+    console.log(index_1.image[rnd].score + "    " + index_1.image[rnd].tag);
+    prepare_msg.setTitle("yande.re " + index_1.image[rnd].id + ".jpg");
+    //prepare_msg.setTitle(" [ Yande.re ]     :regional_indicator_i: :regional_indicator_d:   : " + image[rnd!].id);
+    //prepare_msg.setURL(detail_url);
+    prepare_msg.setDescription(detail_url);
+    prepare_msg.setURL(index_1.image[rnd].url);
+    prepare_msg.addField(" Score :", index_1.image[rnd].score.toString(), true);
+    prepare_msg.addField('\u200b', '\u200b', true);
+    prepare_msg.addField(" Tag :", index_1.image[rnd].tag.toString(), true);
+    prepare_msg.setImage(index_1.image[rnd].url);
 };
 const get_hentai = () => __awaiter(void 0, void 0, void 0, function* () {
     if (index_1.image.length <= 0 || globalThis.rnd_number.length <= 0) {
@@ -109,7 +112,7 @@ const get_hentai = () => __awaiter(void 0, void 0, void 0, function* () {
                 index_1.image.push(img);
             }
             globalThis.rnd_number = [];
-            for (let j = 0; j < 8; j++) { //get 5 different random number
+            for (let j = 0; j < 8; j++) { //get 8 different random number
                 let rnd = getRndInteger(0, index_1.image.length);
                 //console.log(rnd);
                 if (globalThis.rnd_number.indexOf(rnd) == -1 || globalThis.rnd_number === undefined) {
@@ -143,14 +146,14 @@ const get_hentai_bytag = (query, message) => __awaiter(void 0, void 0, void 0, f
             prepare_msg.addField(" Tag :", data.posts[rnd].tags.toString(), true);
             prepare_msg.setImage(data.posts[rnd].jpeg_url);
             prepare_msg.setURL(detail_url);
-            prepare_msg.setFooter(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL());
-            prepare_msg.setTimestamp();
         }
     })
         .catch((error) => {
         console.log(error);
         prepare_msg.setTitle(" error happened when request to yande.re!");
     });
+    prepare_msg.setFooter(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL());
+    prepare_msg.setTimestamp();
     const send_msg = yield message.channel.send({ embeds: [prepare_msg] });
     send_msg.react('♻️');
     message.delete().catch((error) => {

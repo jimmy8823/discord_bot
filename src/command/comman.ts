@@ -51,7 +51,7 @@ export const help: CommandInt = {
 export const hentai: CommandInt = {
     name : "hentai",
     description : ":underage: usage: +hentai or +hentai tag # if want to use multi tag use +, english only",
-    run : async (message) => {
+    run :async (message) => {
         const prepare_msg = new MessageEmbed();
         if(message.content.length>7){
             let query = message.content.substring(8,);
@@ -61,19 +61,7 @@ export const hentai: CommandInt = {
             await get_hentai();
             const{ author, channel, content } = message;
             //prepare_msg.setdDescription();
-            let rnd = await globalThis.rnd_number.pop();
-            let detail_url = "https://yande.re/post/show/" + image[rnd!].id;
-            console.log(image[rnd!].score +"    "+image[rnd!].tag);
-            prepare_msg.setTitle("yande.re " + image[rnd!].id + ".jpg");
-            //prepare_msg.setTitle(" [ Yande.re ]     :regional_indicator_i: :regional_indicator_d:   : " + image[rnd!].id);
-            //prepare_msg.setURL(detail_url);
-            prepare_msg.setDescription(detail_url);
-            prepare_msg.setURL(image[rnd!].url as string);
-            prepare_msg.addField(" Score :", image[rnd!].score.toString() ,true);
-            prepare_msg.addField('\u200b', '\u200b',true);
-            prepare_msg.addField(" Tag :", image[rnd!].tag.toString() ,true);
-            
-            prepare_msg.setImage(image[rnd!].url as string);
+            await write_embed(prepare_msg);
             prepare_msg.setFooter(
                 author.username + "#" + author.discriminator,
                 author.displayAvatarURL()
@@ -88,6 +76,21 @@ export const hentai: CommandInt = {
         }
     }
 }
+const write_embed = (prepare_msg:MessageEmbed)=>{
+    let rnd = globalThis.rnd_number.pop();
+    let detail_url = "https://yande.re/post/show/" + image[rnd!].id;
+    console.log(image[rnd!].score +"    "+image[rnd!].tag);
+    prepare_msg.setTitle("yande.re " + image[rnd!].id + ".jpg");
+    //prepare_msg.setTitle(" [ Yande.re ]     :regional_indicator_i: :regional_indicator_d:   : " + image[rnd!].id);
+    //prepare_msg.setURL(detail_url);
+    prepare_msg.setDescription(detail_url);
+    prepare_msg.setURL(image[rnd!].url as string);
+    prepare_msg.addField(" Score :", image[rnd!].score.toString() ,true);
+    prepare_msg.addField('\u200b', '\u200b',true);
+    prepare_msg.addField(" Tag :", image[rnd!].tag.toString() ,true);
+    prepare_msg.setImage(image[rnd!].url as string);
+}
+
 const get_hentai = async()=>{
     if(image.length<=0 || globalThis.rnd_number.length<=0){
         await clear_list();
@@ -105,7 +108,7 @@ const get_hentai = async()=>{
                 image.push(img);
             }
             globalThis.rnd_number=[];
-            for(let j=0;j<8;j++){ //get 5 different random number
+            for(let j=0;j<8;j++){ //get 8 different random number
                 let rnd = getRndInteger(0,image.length);
                 //console.log(rnd);
                 if(globalThis.rnd_number.indexOf(rnd)==-1||globalThis.rnd_number===undefined){
@@ -137,17 +140,17 @@ const  get_hentai_bytag = async(query:string,message:Message)=>{
             prepare_msg.addField(" Tag :", data.posts[rnd].tags.toString() ,true);
             prepare_msg.setImage(data.posts[rnd].jpeg_url as string);
             prepare_msg.setURL(detail_url);
-            prepare_msg.setFooter(
-                message.author.username + "#" + message.author.discriminator,
-                message.author.displayAvatarURL()
-            );
-            prepare_msg.setTimestamp();
         }
     })
     .catch((error)=> {
         console.log(error);
         prepare_msg.setTitle(" error happened when request to yande.re!");
     });
+    prepare_msg.setFooter(
+    message.author.username + "#" + message.author.discriminator,
+    message.author.displayAvatarURL()
+    );
+    prepare_msg.setTimestamp();
     const send_msg = await message.channel.send({ embeds : [prepare_msg] });
     send_msg.react('♻️');
     message.delete().catch((error)=>{
