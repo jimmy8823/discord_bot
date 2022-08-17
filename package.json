@@ -16,7 +16,8 @@
     "discord.js": "^13.7.0",
     "dotenv": "^16.0.1",
     "mongoose": "^6.3.3",
-    "node-fetch": "^3.2.4"
+    "node-fetch": "^3.2.4",
+    "translate": "^1.4.1"
   },
   "devDependencies": {
     "@types/node": "^17.0.32",

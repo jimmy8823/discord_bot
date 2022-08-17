@@ -82,6 +82,7 @@ exports.hentai = {
     })
 };
 const write_embed = (prepare_msg) => {
+    var _a;
     let rnd = globalThis.rnd_number.pop();
     let detail_url = "https://yande.re/post/show/" + index_1.image[rnd].id;
     console.log(index_1.image[rnd].score + "    " + index_1.image[rnd].tag);
@@ -94,6 +95,7 @@ const write_embed = (prepare_msg) => {
     prepare_msg.addField('\u200b', '\u200b', true);
     prepare_msg.addField(" Tag :", index_1.image[rnd].tag.toString(), true);
     prepare_msg.setImage(index_1.image[rnd].url);
+    console.log((_a = prepare_msg.image) === null || _a === void 0 ? void 0 : _a.url);
 };
 const get_hentai = () => __awaiter(void 0, void 0, void 0, function* () {
     if (index_1.image.length <= 0 || globalThis.rnd_number.length <= 0) {

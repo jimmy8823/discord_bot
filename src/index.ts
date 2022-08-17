@@ -1,4 +1,4 @@
-import { Client, MessageReaction } from "discord.js";
+import { Client, MessageReaction,TextChannel } from "discord.js";
 import { connectDatabase } from "./database/connectDatabase";
 import { validateEnv } from "./utils/validateEnv";
 import { onMessage } from "./event/onMessage"
@@ -30,7 +30,9 @@ declare global {
     });
     Bot.on("messageCreate", async (message) =>  {
         guildQueue = player.getQueue(message.guildId as string);
-        await onMessage(message)});
+        await onMessage(Bot,message);
+    });
+        
     Bot.on("messageReactionAdd", async (reaction,user) =>  {
         // When a reaction is received, check if the structure is partial
         if (reaction.partial) {
@@ -68,6 +70,7 @@ declare global {
         // The reaction is now also fully available and the properties will be reflected accurately:
         console.log(`${reaction.count} user(s) have given the same reaction to this message!`);
     });
+    
     await connectDatabase();
     await Bot.login(process.env.TOKEN as string);
     globalThis.queue_index = [":zero:",":one:",":two:",":three:",":four:",":five:",":six:",":seven:",":eight:",":nine:",":keycap_ten:"];

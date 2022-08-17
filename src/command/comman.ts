@@ -88,7 +88,8 @@ const write_embed = (prepare_msg:MessageEmbed)=>{
     prepare_msg.addField(" Score :", image[rnd!].score.toString() ,true);
     prepare_msg.addField('\u200b', '\u200b',true);
     prepare_msg.addField(" Tag :", image[rnd!].tag.toString() ,true);
-    prepare_msg.setImage(image[rnd!].url as string);
+    prepare_msg.setImage(image[rnd!].url);
+    console.log(prepare_msg.image?.url);
 }
 
 const get_hentai = async()=>{

@@ -33,7 +33,7 @@ exports.image = [];
     }));
     Bot.on("messageCreate", (message) => __awaiter(void 0, void 0, void 0, function* () {
         exports.guildQueue = exports.player.getQueue(message.guildId);
-        yield (0, onMessage_1.onMessage)(message);
+        yield (0, onMessage_1.onMessage)(Bot, message);
     }));
     Bot.on("messageReactionAdd", (reaction, user) => __awaiter(void 0, void 0, void 0, function* () {
         // When a reaction is received, check if the structure is partial

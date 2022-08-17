@@ -12,8 +12,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.onMessage = void 0;
 const _CommandList_1 = require("../command/_CommandList");
 const prefix = "+";
-const onMessage = (message) => __awaiter(void 0, void 0, void 0, function* () {
-    if (message.author.bot) {
+const onMessage = (client, message) => __awaiter(void 0, void 0, void 0, function* () {
+    if (message.channel.id === "765415955890700328" || message.channel.id === "855001141670182922") { //retweet
+        if (message.content.startsWith("http")) { // if it post a url 
+            client.channels.cache.get('983753978141626458').send(message.content);
+        }
+        else {
+            try { // if it post a image
+                const attach = message.attachments;
+                let attach_url = attach.map(a => a.url);
+                console.log(attach_url);
+                if (attach_url != undefined)
+                    client.channels.cache.get('983753978141626458').send(attach_url[0]);
+            }
+            catch (_a) {
+                return;
+            }
+        }
+    }
+    if (message.author.bot) { //flitter bot content
         return;
     }
     for (const Command of _CommandList_1.CommandList) {
