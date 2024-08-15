@@ -12,7 +12,7 @@ export const test: CommandInt = {
     run : async (message) => {
         const{ author, channel, content } = message;
         //let targetdata = await DBmodel.findOne({ discordId: author.id });
-        let text = "島民為甚麼不念台大!";
+        let text = "測試訊息!";
         /*if(!targetdata){
             targetdata = await DBmodel.create({
                 discordId: author.id,
@@ -21,7 +21,7 @@ export const test: CommandInt = {
             await targetdata.save();
         }*/
         const prepare_msg = new MessageEmbed();
-            prepare_msg.setTitle("哈兔大聯盟 哈!");
+            prepare_msg.setTitle("測試標題!");
             prepare_msg.setDescription(text);
             prepare_msg.setAuthor(
                 author.username + "#" + author.discriminator,
